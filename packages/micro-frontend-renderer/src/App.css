@@ -15,3 +15,9 @@
 .App-link {
   color: #61dafb;
 }
+
+.App-unknownPathname {
+  font-weight: bold;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}

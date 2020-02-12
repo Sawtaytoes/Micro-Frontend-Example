@@ -28,28 +28,30 @@ const MicroFrontendLoader = ({
   }, [onIframeHeightChanged])
 
   return (
-    `/${matchingPathname}` === currentPathname
-    ? (
-      <iframe
-        srcDoc={`
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <link href="${cssLocation}" rel="stylesheet">
-            </head>
-            <body>
-              <div id="${matchingPathname}" />
+    <iframe
+      onLoad={onIframeHeightChanged}
+      ref={iframeRef}
+      srcDoc={`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <link href="${cssLocation}" rel="stylesheet">
+          </head>
+          <body>
+            <div onclick="(() => window.top.dispatchEvent(new Event('unknownPath')))()">
+              <div id="${microFrontendIdentifier}"></div>
+            </div>
 
-              ${
-                scriptLocations
-                .map(scriptLocation => (
-                  `<script async src="${scriptLocation}"></script>`
-                ))
-                .join('')
-              }
-            </body>
-          </html>
-        `}
+            ${
+              scriptLocations
+              .map(scriptLocation => (
+                `<script async src="${scriptLocation}"></script>`
+              ))
+              .join('')
+            }
+          </body>
+        </html>
+      `}
       style={{
         border: 'none',
         display: 'block',
@@ -60,15 +62,34 @@ const MicroFrontendLoader = ({
         ),
         width: '100%',
       }}
-        title={matchingPathname}
-      />
-    )
-    : null
+      title={microFrontendIdentifier}
+    />
   )
+}
+
+const EventListener = () => {
+  const history = useHistory()
+
+  useEffect(() => {
+    const redirectOnUnknownPath = () => {
+      console.log('yo');
+      history.push('/404')
+    }
+
+    window.addEventListener('unknownPath', redirectOnUnknownPath)
+
+    return () => {
+      window.removeEventListener('unknownPath', redirectOnUnknownPath)
+    }
+  }, [history])
+
+  return null
 }
 
 const App = () => (
   <BrowserRouter>
+    <EventListener />
+
     <div className="App">
       <header className="App-header">
         Parent Document Header
