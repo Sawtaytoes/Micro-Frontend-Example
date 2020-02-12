@@ -68,14 +68,12 @@ const App = () => (
       </header>
 
       <nav>
-        <ul>
-          <li>
-            <Link to="/micro-frontend-1">Load "Micro Frontend 1"</Link>
-          </li>
-          <li>
-            <Link to="/micro-frontend-2">Load "Micro Frontend 2"</Link>
-          </li>
-        </ul>
+        <div>
+          <Link to="/micro-frontend-1">Load "Micro Frontend 1"</Link>
+        </div>
+        <div>
+          <Link to="/micro-frontend-2">Load "Micro Frontend 2"</Link>
+        </div>
       </nav>
 
       <MicroFrontendLoader
