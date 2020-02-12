@@ -63,7 +63,7 @@ const App = () => (
       </nav>
 
       <MicroFrontendLoader
-        cssLocation="/micro-frontend-1/main.d1b05096.chunk.css"
+        cssLocation="/micro-frontend-1/main.eae2fd7b.chunk.css"
         matchingPathname="micro-frontend-1"
         scriptLocations={[
           '/micro-frontend-1/2.23615124.chunk.js',
@@ -73,7 +73,7 @@ const App = () => (
       />
 
       <MicroFrontendLoader
-        cssLocation="/micro-frontend-2/main.9b5ecd00.chunk.css"
+        cssLocation="/micro-frontend-2/main.0a332295.chunk.css"
         matchingPathname="micro-frontend-2"
         scriptLocations={[
           '/micro-frontend-2/2.b8170ca8.chunk.js',
