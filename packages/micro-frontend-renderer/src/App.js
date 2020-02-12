@@ -1,51 +1,106 @@
 import React, { useEffect } from 'react'
+import { BrowserRouter, Link, useLocation } from 'react-router-dom'
 
-import logo from './logo.svg'
 import './App.css'
 
-const useScript = url => {
+const useScript = ({
+  matchingPathname,
+  currentPathname,
+  scriptLocations,
+}) => {
   useEffect(() => {
-    const script = document.createElement('script')
+    if (`/${matchingPathname}` !== currentPathname) {
+      return Function.prototype
+    }
 
-    script.src = url
-    script.async = true
+    const scriptElements = (
+      scriptLocations
+      .map(scriptLocation => {
+        const scriptElement = document.createElement('script')
 
-    document.body.appendChild(script)
+        scriptElement.src = scriptLocation
+        scriptElement.async = true
+
+        return scriptElement
+      })
+    )
+
+    scriptElements
+    .forEach(scriptElement => {
+      document.body.appendChild(scriptElement)
+    })
 
     return () => {
-      document.body.removeChild(script)
+      scriptElements
+      .forEach(scriptElement => {
+        document.body.removeChild(scriptElement)
+      })
     }
-  }, [url])
+  }, [currentPathname, matchingPathname, scriptLocations])
 }
 
-// export default useScript
+const MicroFrontendLoader = ({
+  matchingPathname,
+  scriptLocations,
+}) => {
+  const location = useLocation()
 
-const App = () => {
-  useScript('microFrontendJs/2.67ebc307.chunk.js')
-  useScript('microFrontendJs/main.976bc0aa.chunk.js')
-  useScript('microFrontendJs/runtime-main.7ec979d4.js')
+  const currentPathname = location.pathname.replace(/^(.*?)[/]*$/, '$1')
+
+  useScript({
+    currentPathname,
+    matchingPathname,
+    scriptLocations,
+  })
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-
-      <div id="micro-frontend-1">1</div>
-      <div id="micro-frontend-2">2</div>
-    </div>
+    `/${matchingPathname}` === currentPathname
+    ? <div id={matchingPathname} />
+    : null
   )
 }
+
+const App = () => (
+  <BrowserRouter>
+    <div className="App">
+      <header className="App-header">
+        Parent Document Header
+      </header>
+
+      <nav>
+        <ul>
+          <li>
+            <Link to="/micro-frontend-1">Load "Micro Frontend 1"</Link>
+          </li>
+          <li>
+            <Link to="/micro-frontend-2">Load "Micro Frontend 2"</Link>
+          </li>
+        </ul>
+      </nav>
+
+      <MicroFrontendLoader
+        matchingPathname="micro-frontend-1"
+        scriptLocations={[
+          '/micro-frontend-1/2.23615124.chunk.js',
+          '/micro-frontend-1/main.90a2c267.chunk.js',
+          '/micro-frontend-1/runtime-main.7ec979d4.js',
+        ]}
+      />
+
+      <MicroFrontendLoader
+        matchingPathname="micro-frontend-2"
+        scriptLocations={[
+          '/micro-frontend-2/2.b8170ca8.chunk.js',
+          '/micro-frontend-2/main.0f1b2201.chunk.js',
+          '/micro-frontend-2/runtime-main.0ef16878.js',
+        ]}
+      />
+
+      <footer className="App-header">
+        Parent Document Footer
+      </footer>
+    </div>
+  </BrowserRouter>
+)
 
 export default App
