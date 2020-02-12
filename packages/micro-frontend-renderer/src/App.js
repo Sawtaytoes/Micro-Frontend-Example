@@ -23,6 +23,7 @@ const useScript = url => {
 const App = () => {
   useScript('microFrontendJs/2.67ebc307.chunk.js')
   useScript('microFrontendJs/main.976bc0aa.chunk.js')
+  useScript('microFrontendJs/runtime-main.7ec979d4.js')
 
   return (
     <div className="App">
