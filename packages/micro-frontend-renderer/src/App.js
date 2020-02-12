@@ -1,45 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { BrowserRouter, Link, useLocation } from 'react-router-dom'
 
 import './App.css'
 
-const useScript = ({
-  matchingPathname,
-  currentPathname,
-  scriptLocations,
-}) => {
-  useEffect(() => {
-    if (`/${matchingPathname}` !== currentPathname) {
-      return Function.prototype
-    }
-
-    const scriptElements = (
-      scriptLocations
-      .map(scriptLocation => {
-        const scriptElement = document.createElement('script')
-
-        scriptElement.src = scriptLocation
-        scriptElement.async = true
-
-        return scriptElement
-      })
-    )
-
-    scriptElements
-    .forEach(scriptElement => {
-      document.body.appendChild(scriptElement)
-    })
-
-    return () => {
-      scriptElements
-      .forEach(scriptElement => {
-        document.body.removeChild(scriptElement)
-      })
-    }
-  }, [currentPathname, matchingPathname, scriptLocations])
-}
-
 const MicroFrontendLoader = ({
+  cssLocation,
   matchingPathname,
   scriptLocations,
 }) => {
@@ -47,15 +12,36 @@ const MicroFrontendLoader = ({
 
   const currentPathname = location.pathname.replace(/^(.*?)[/]*$/, '$1')
 
-  useScript({
-    currentPathname,
-    matchingPathname,
-    scriptLocations,
-  })
-
   return (
     `/${matchingPathname}` === currentPathname
-    ? <div id={matchingPathname} />
+    ? (
+      <iframe
+        srcDoc={`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <link href="${cssLocation}" rel="stylesheet">
+            </head>
+            <body>
+              <div id="${matchingPathname}" />
+
+              ${
+                scriptLocations
+                .map(scriptLocation => (
+                  `<script async src="${scriptLocation}"></script>`
+                ))
+                .join('')
+              }
+            </body>
+          </html>
+        `}
+        style={{
+          border: 0,
+          width: '100%',
+        }}
+        title={matchingPathname}
+      />
+    )
     : null
   )
 }
@@ -77,6 +63,7 @@ const App = () => (
       </nav>
 
       <MicroFrontendLoader
+        cssLocation="/micro-frontend-1/main.d1b05096.chunk.css"
         matchingPathname="micro-frontend-1"
         scriptLocations={[
           '/micro-frontend-1/2.23615124.chunk.js',
@@ -86,6 +73,7 @@ const App = () => (
       />
 
       <MicroFrontendLoader
+        cssLocation="/micro-frontend-2/main.9b5ecd00.chunk.css"
         matchingPathname="micro-frontend-2"
         scriptLocations={[
           '/micro-frontend-2/2.b8170ca8.chunk.js',
