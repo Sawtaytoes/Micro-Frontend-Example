@@ -61,7 +61,6 @@ const EventListener = () => {
 
   useEffect(() => {
     const redirectOnUnknownPath = () => {
-      console.log('yo');
       history.push('/404')
     }
 
@@ -85,6 +84,9 @@ const App = () => (
       </header>
 
       <nav>
+        <div>
+          <Link to="/">Main Route</Link>
+        </div>
         <div>
           <Link to="/micro-frontend-1">Load "Micro Frontend 1"</Link>
         </div>
@@ -110,7 +112,25 @@ const App = () => (
 
         <Route path="/404">
           <div className="App-unknownPathname">
-            404 - Path not found.
+            404 - Path not found (this is intentional).
+          </div>
+        </Route>
+
+        <Route
+          exact
+          path="/"
+        >
+          <div
+            className="App-main"
+            onClick={() => {
+              window
+              .top
+              .dispatchEvent(
+                new Event('unknownPath')
+              )
+            }}
+          >
+            Main Route.
           </div>
         </Route>
 

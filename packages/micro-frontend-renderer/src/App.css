@@ -16,6 +16,13 @@
   color: #61dafb;
 }
 
+.App-main {
+  background-color: yellow;
+  padding-bottom: 60px;
+  padding-top: 60px;
+  text-align: center;
+}
+
 .App-unknownPathname {
   font-weight: bold;
   padding-top: 20px;
