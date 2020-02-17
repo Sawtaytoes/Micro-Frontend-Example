@@ -4,12 +4,12 @@ import { BrowserRouter, Link, Redirect, Route, Switch, useHistory } from 'react-
 import './App.css'
 
 const MicroFrontendLoader = ({
-  cssLocation,
+  indexHtmlLocation,
   microFrontendIdentifier,
-  scriptLocations,
 }) => {
   const iframeRef = useRef()
-  const [iframeHeight, setIframeHeight] = useState()
+  const [iframeContents, setIframeContents] = useState(null)
+  const [iframeHeight, setIframeHeight] = useState(0)
 
   const onIframeHeightChanged = (
     useCallback(() => {
@@ -18,6 +18,15 @@ const MicroFrontendLoader = ({
       })
     }, [iframeRef])
   )
+
+  useEffect(() => {
+    fetch(indexHtmlLocation)
+    .then(response => (
+      response
+      .text()
+    ))
+    .then(setIframeContents)
+  }, [indexHtmlLocation])
 
   useEffect(() => {
     window.addEventListener('resize', onIframeHeightChanged)
@@ -31,27 +40,7 @@ const MicroFrontendLoader = ({
     <iframe
       onLoad={onIframeHeightChanged}
       ref={iframeRef}
-      srcDoc={`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <link href="${cssLocation}" rel="stylesheet">
-          </head>
-          <body>
-            <div onclick="(() => window.top.dispatchEvent(new Event('unknownPath')))()">
-              <div id="${microFrontendIdentifier}"></div>
-            </div>
-
-            ${
-              scriptLocations
-              .map(scriptLocation => (
-                `<script async src="${scriptLocation}"></script>`
-              ))
-              .join('')
-            }
-          </body>
-        </html>
-      `}
+      srcDoc={iframeContents}
       style={{
         border: 'none',
         display: 'block',
@@ -107,25 +96,15 @@ const App = () => (
       <Switch>
         <Route path="/micro-frontend-1">
           <MicroFrontendLoader
-            cssLocation="/micro-frontend-1/main.a9054f16.chunk.css"
+            indexHtmlLocation="/micro-frontend-1/app.html"
             microFrontendIdentifier="micro-frontend-1"
-            scriptLocations={[
-              '/micro-frontend-1/2.23615124.chunk.js',
-              '/micro-frontend-1/main.90a2c267.chunk.js',
-              '/micro-frontend-1/runtime-main.7ec979d4.js',
-            ]}
           />
         </Route>
 
         <Route path="/micro-frontend-2">
           <MicroFrontendLoader
-            cssLocation="/micro-frontend-2/main.2e837e40.chunk.css"
+            indexHtmlLocation="/micro-frontend-2/app.html"
             microFrontendIdentifier="micro-frontend-2"
-            scriptLocations={[
-              '/micro-frontend-2/2.b8170ca8.chunk.js',
-              '/micro-frontend-2/main.0f1b2201.chunk.js',
-              '/micro-frontend-2/runtime-main.0ef16878.js',
-            ]}
           />
         </Route>
 
