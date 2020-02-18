@@ -7,8 +7,15 @@ const MicroFrontendLoader = ({
   assetManifestLocation,
   microFrontendIdentifier,
 }) => {
-  const [linkHrefs, setLinkHrefs] = useState([])
-  const [scriptSrcs, setScriptSrcs] = useState([])
+  const [
+    linkHrefs,
+    setLinkHrefs,
+  ] = useState([])
+
+  const [
+    scriptSrcs,
+    setScriptSrcs,
+  ] = useState([])
 
   useEffect(() => {
     fetch(assetManifestLocation)
@@ -46,8 +53,11 @@ const MicroFrontendLoader = ({
           .createElement('script')
         )
 
-        scriptElement.async = true
-        scriptElement.src = `/${microFrontendIdentifier}/${scriptSrc}`
+        scriptElement
+        .async = true
+
+        scriptElement
+        .src = `/${microFrontendIdentifier}/${scriptSrc}`
 
         document
         .body
@@ -117,10 +127,18 @@ const MicroFrontendLoaderIframe = ({
   )
 
   useEffect(() => {
-    window.addEventListener('resize', onIframeHeightChanged)
+    window
+    .addEventListener(
+      'resize',
+      onIframeHeightChanged,
+    )
 
     return () => {
-      window.removeEventListener('resize', onIframeHeightChanged)
+      window
+      .removeEventListener(
+        'resize',
+        onIframeHeightChanged,
+      )
     }
   }, [onIframeHeightChanged])
 
@@ -150,13 +168,22 @@ const EventListener = () => {
 
   useEffect(() => {
     const redirectOnUnknownPath = () => {
-      history.push('/404')
+      history
+      .push('/404')
     }
 
-    window.addEventListener('unknownPath', redirectOnUnknownPath)
+    window
+    .addEventListener(
+      'unknownPath',
+      redirectOnUnknownPath,
+    )
 
     return () => {
-      window.removeEventListener('unknownPath', redirectOnUnknownPath)
+      window
+      .removeEventListener(
+        'unknownPath',
+        redirectOnUnknownPath,
+      )
     }
   }, [history])
 
@@ -197,6 +224,7 @@ const App = () => (
             microFrontendIdentifier="micro-frontend-1"
           />
         </Route>
+
         <Route path="/micro-frontend-1-iframe">
           <MicroFrontendLoaderIframe
             indexHtmlLocation="/micro-frontend-1/app.html"
@@ -210,6 +238,7 @@ const App = () => (
             microFrontendIdentifier="micro-frontend-2"
           />
         </Route>
+
         <Route path="/micro-frontend-2-iframe">
           <MicroFrontendLoaderIframe
             indexHtmlLocation="/micro-frontend-2/app.html"
