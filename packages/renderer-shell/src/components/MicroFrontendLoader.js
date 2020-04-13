@@ -25,7 +25,7 @@ const MicroFrontendLoader = ({
 		axios(assetManifestLocation)
 		.then(response => (
 			response
-			.json()
+			.data
 		))
 		.then(({
 			entrypoints,

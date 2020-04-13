@@ -16,11 +16,10 @@ const MicroFrontendLoaderIframe = ({
 	const [iframeHeight, setIframeHeight] = useState(0)
 
 	useEffect(() => {
-		axios(indexHtmlLocation)
-		.then(response => (
-			response
-			.text()
-		))
+		axios(
+			indexHtmlLocation,
+			{ responseType: 'text' },
+		)
 		.then(setIframeContents)
 	}, [indexHtmlLocation])
 
