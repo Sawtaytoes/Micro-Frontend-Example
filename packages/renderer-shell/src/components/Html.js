@@ -14,7 +14,6 @@ const propTypes = {
 }
 
 const Html = ({
-	bundleHostname,
 	children,
 	htmlComponents = {},
 }) => (
