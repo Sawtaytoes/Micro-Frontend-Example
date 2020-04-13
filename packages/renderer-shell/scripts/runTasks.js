@@ -47,7 +47,7 @@ const runTasks = ({
 					.stdout
 					.columns
 				)
-				.fill('-')
+				.fill('=')
 				.join('')
 			)
 
