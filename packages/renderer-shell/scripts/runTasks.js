@@ -15,7 +15,6 @@ const tasks = {
 		lintScripts$,
 		webpackBuildServer$,
 		httpServer$,
-		// webpackDevServer$,
 	],
 	lint: [
 		lintScripts$,

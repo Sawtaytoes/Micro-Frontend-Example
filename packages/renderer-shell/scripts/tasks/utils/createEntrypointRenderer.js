@@ -45,6 +45,7 @@ const listenForEntrypoints = () => (
 					error,
 				) => {
 					response.send(error)
+
 					console.error(error)
 				}),
 			)
