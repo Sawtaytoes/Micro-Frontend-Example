@@ -5,5 +5,6 @@ module.exports = {
 	isLocalDevelopment: false,
 	nodeEnvironment: 'production',
 	outputPath: getAbsolutePath('./build'),
+	reactRenderTarget: 'renderer-shell',
 	webpackDevServerPort: 8001,
 }

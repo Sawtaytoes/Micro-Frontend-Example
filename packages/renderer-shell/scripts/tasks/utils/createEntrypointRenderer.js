@@ -5,7 +5,13 @@ const { of, Subject } = require('rxjs')
 
 const renderEntrypoint$ = new Subject()
 
-const listenForEntrypoints = () => (
+const listenForEntrypoints = () => {
+	const __CONFIG__ = (
+		JSON.stringify(
+			config
+		)
+	)
+
 	renderEntrypoint$
 	.pipe(
 		tap(({
@@ -37,6 +43,8 @@ const listenForEntrypoints = () => (
 					serverEntrypoint,
 				) => (
 					serverEntrypoint({
+						__CONFIG__,
+						config,
 						request,
 						response,
 					})
@@ -52,7 +60,7 @@ const listenForEntrypoints = () => (
 		)),
 	)
 	.subscribe()
-)
+}
 
 const createEntrypointRenderer = (
 	filename,

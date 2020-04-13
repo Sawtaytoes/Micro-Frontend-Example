@@ -1,14 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import App from '../components/App'
+import ClientRoot from '../components/ClientRoot'
 
 const rootElement = (
 	document
-	.getElementById('renderer-shell')
+	.getElementById(
+		window
+		.config
+		.get('reactRenderTarget')
+	)
 )
 
 ReactDOM.hydrate(
-	<App />,
+	<ClientRoot />,
 	rootElement,
 )

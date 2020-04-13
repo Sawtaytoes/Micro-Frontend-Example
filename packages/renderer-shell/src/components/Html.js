@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import App from '../components/App'
-
 const propTypes = {
+	children: PropTypes.node.isRequired,
 	htmlComponents: (
 		PropTypes.shape({
 			htmlProps: PropTypes.object,
@@ -15,6 +14,7 @@ const propTypes = {
 }
 
 const Html = ({
+	children,
 	htmlComponents = {},
 }) => (
 	<html
@@ -27,9 +27,7 @@ const Html = ({
 			{htmlComponents.head}
 		</head>
 		<body>
-			<div id="renderer-shell">
-				<App />
-			</div>
+			{children}
 
 			<script
 				defer

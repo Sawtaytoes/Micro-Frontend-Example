@@ -7,7 +7,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 const getAbsolutePath = require('../../../config/utils/getAbsolutePath')
 
-const frontendServerPort = config.get('frontendServerPort')
 const isLocalDevelopment = config.get('isLocalDevelopment')
 const nodeEnvironment = config.get('nodeEnvironment')
 const outputPath = config.get('outputPath')
@@ -49,13 +48,6 @@ const webpackServerConfig = {
 		.length
 	),
 	plugins: [
-		new webpack.DefinePlugin({
-			'global.frontendServerPort': (
-				JSON.stringify(
-					frontendServerPort
-				)
-			),
-		}),
 		new webpack.ProgressPlugin(),
 		// new BellOnBundlerErrorPlugin(),
 		new CleanWebpackPlugin({
