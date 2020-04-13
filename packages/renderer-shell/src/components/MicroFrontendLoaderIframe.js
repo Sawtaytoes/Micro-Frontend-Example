@@ -1,5 +1,11 @@
 import axios from 'axios'
+import PropTypes from 'prop-types'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+
+const propTypes = {
+	indexHtmlLocation: PropTypes.string.isRequired,
+	microFrontendIdentifier: PropTypes.string.isRequired,
+}
 
 const MicroFrontendLoaderIframe = ({
 	indexHtmlLocation,
@@ -68,5 +74,7 @@ const MicroFrontendLoaderIframe = ({
 		/>
 	)
 }
+
+MicroFrontendLoaderIframe.propTypes = propTypes
 
 export default MicroFrontendLoaderIframe

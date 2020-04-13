@@ -1,5 +1,11 @@
 import axios from 'axios'
+import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
+
+const propTypes = {
+	assetManifestLocation: PropTypes.string.isRequired,
+	microFrontendIdentifier: PropTypes.string.isRequired,
+}
 
 const MicroFrontendLoader = ({
 	assetManifestLocation,
@@ -92,5 +98,7 @@ const MicroFrontendLoader = ({
 		</div>
 	)
 }
+
+MicroFrontendLoader.propTypes = propTypes
 
 export default MicroFrontendLoader
