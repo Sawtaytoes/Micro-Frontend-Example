@@ -36,10 +36,10 @@ const listenForEntrypoints = () => (
 				map((
 					serverEntrypoint,
 				) => (
-					serverEntrypoint(
+					serverEntrypoint({
 						request,
 						response,
-					)
+					})
 				)),
 				catchError((
 					error,
@@ -50,6 +50,7 @@ const listenForEntrypoints = () => (
 			)
 		)),
 	)
+	.subscribe()
 )
 
 const createEntrypointRenderer = (

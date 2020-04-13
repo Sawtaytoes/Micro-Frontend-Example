@@ -1,4 +1,7 @@
-// import { renderToStaticMarkup } from 'react-dom/server'
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+
+import App from '../components/App'
 
 const html = `
 	<!DOCTYPE html>
@@ -7,19 +10,20 @@ const html = `
 			<title>Renderer Shell</title>
 		</head>
 		<body>
-			<div id="renderer-shell" />
+			<div id="renderer-shell">${renderToStaticMarkup(<App />)}</div>
+			<script src="//localhost:${global.frontendServerPort}/client.bundle.js"></script>
 		</body>
 	</html>
 `
 
-const server = (
+const server = ({
+	// request,
 	response,
-) => (
-	response.send(
-		// renderToStaticMarkup(
-			html
-		// )
+}) => (
+	response
+	.send(
+		html
 	)
 )
 
-module.exports = server
+export default server

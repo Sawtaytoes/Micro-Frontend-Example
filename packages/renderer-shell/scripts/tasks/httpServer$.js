@@ -3,19 +3,36 @@ const cors = require('cors')
 const express = require('express')
 const { catchError, map, tap } = require('rxjs/operators')
 const { of } = require('rxjs')
+const webpack = require('webpack')
+const webpackDevMiddleware = require('webpack-dev-middleware')
+const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const createEntrypointRenderer = require('./utils/createEntrypointRenderer')
+const webpackClientConfig = require('./utils/webpackClientConfig')
 
 const httpServer$ = (
-	of(express())
+	of({
+		devServerConfig: (
+			webpackClientConfig
+			.devServer
+		),
+		httpServer: express(),
+		webpackCompiler: (
+			webpack(
+				webpackClientConfig
+			)
+		),
+	})
 	.pipe(
 		tap(() => {
 			createEntrypointRenderer
 			.listenForEntrypoints()
 		}),
-		map((
+		map(({
+			devServerConfig,
 			httpServer,
-		) => (
+			webpackCompiler,
+		}) => (
 			httpServer
 			.use(cors())
 
@@ -24,6 +41,19 @@ const httpServer$ = (
 				.static(
 					config.get('outputPath'),
 					{ redirect: false }
+				)
+			)
+
+			.use(
+				webpackDevMiddleware(
+					webpackCompiler,
+					devServerConfig,
+				)
+			)
+
+			.use(
+				webpackHotMiddleware(
+					webpackCompiler
 				)
 			)
 
@@ -37,7 +67,7 @@ const httpServer$ = (
 			// )
 			.get(
 				'*',
-				createEntrypointRenderer('frontend.server')
+				createEntrypointRenderer('server.bundle')
 			)
 		)),
 		tap((

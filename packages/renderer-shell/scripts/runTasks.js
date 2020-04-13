@@ -4,16 +4,18 @@ const { from } = require('rxjs')
 const httpServer$ = require('./tasks/httpServer$')
 const lintScripts$ = require('./tasks/lintScripts$')
 const webpackBuild$ = require('./tasks/webpackBuild$')
-const webpackDevServer$ = require('./tasks/webpackDevServer$')
+const webpackBuildServer$ = require('./tasks/webpackBuildServer$')
 
 const tasks = {
 	build: [
+		lintScripts$,
 		webpackBuild$,
 	],
 	develop: [
 		lintScripts$,
+		webpackBuildServer$,
 		httpServer$,
-		webpackDevServer$,
+		// webpackDevServer$,
 	],
 	lint: [
 		lintScripts$,

@@ -2,14 +2,10 @@ const webpack = require('webpack')
 const { bindNodeCallback, of } = require('rxjs')
 const { catchError, filter, switchMap, tap } = require('rxjs/operators')
 
-const webpackClientConfig = require('./utils/webpackClientConfig')
 const webpackServerConfig = require('./utils/webpackServerConfig')
 
-const webpackBuild$ = (
-	of([
-		webpackClientConfig,
-		webpackServerConfig,
-	])
+const webpackBuildServer$ = (
+	of(webpackServerConfig)
 	.pipe(
 		switchMap((
 			webpackConfig,
@@ -31,7 +27,7 @@ const webpackBuild$ = (
 		}),
 		catchError(error => {
 			console.error(
-				'Webpack build failed:',
+				'Webpack server build failed:',
 				error,
 			)
 
@@ -40,4 +36,4 @@ const webpackBuild$ = (
 	)
 )
 
-module.exports = webpackBuild$
+module.exports = webpackBuildServer$

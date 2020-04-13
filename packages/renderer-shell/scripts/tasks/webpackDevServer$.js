@@ -1,14 +1,13 @@
 const webpack = require('webpack')
 const WebpackDevServer = require("webpack-dev-server")
 const { catchError, map, tap } = require('rxjs/operators')
+const { of } = require('rxjs')
 
-const buildWebpackConfig = require('./utils/buildWebpackConfig')
-const createWebpackConfigOptionsObservable = require('./utils/createWebpackConfigOptionsObservable')
+const webpackClientConfig = require('./utils/webpackClientConfig')
 
 const webpackDevServer$ = (
-	createWebpackConfigOptionsObservable()
+	of(webpackClientConfig)
 	.pipe(
-		map(buildWebpackConfig),
 		map((
 			webpackConfig,
 		) => ({
