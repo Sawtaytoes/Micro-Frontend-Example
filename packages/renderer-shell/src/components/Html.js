@@ -14,6 +14,7 @@ const propTypes = {
 }
 
 const Html = ({
+	bundleHostname,
 	children,
 	htmlComponents = {},
 }) => (
@@ -28,14 +29,6 @@ const Html = ({
 		</head>
 		<body>
 			{children}
-
-			<script
-				defer
-				src={
-					`//localhost:${global.frontendServerPort}`
-					.concat('/client.bundle.js')
-				}
-			/>
 
 			{htmlComponents.scripts}
 			{htmlComponents.body}

@@ -25,6 +25,19 @@ const server = ({
 								windowConfig={__CONFIG__}
 							/>
 						),
+						scripts: (
+							<script
+								defer
+								src={
+									'//localhost'
+									.concat(`:${
+										config
+										.get('frontendServerPort')
+									}`)
+									.concat('/client.bundle.js')
+								}
+							/>
+						),
 					}}
 				>
 					<ReactRenderTarget
