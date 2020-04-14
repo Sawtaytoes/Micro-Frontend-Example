@@ -11,7 +11,7 @@ import ServerRoot from '../components/ServerRoot'
 const server = ({
 	__CONFIG__,
 	config,
-	microFrontend,
+	microFrontendContextValue,
 	request,
 	response,
 }) => {
@@ -46,11 +46,11 @@ const server = ({
 					<ReactRenderTarget
 						renderTargetId={
 							config
-							.get('reactRenderTarget')
+							.get('reactRenderTargetId')
 						}
 					>
 						<MicroFrontendContext.Provider
-							value={microFrontend}
+							value={microFrontendContextValue}
 						>
 							<ServerRoot
 								config={config}

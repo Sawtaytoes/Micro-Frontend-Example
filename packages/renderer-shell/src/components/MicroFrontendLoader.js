@@ -1,8 +1,9 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import MicroFrontendContext from './MicroFrontendContext'
+import ReactRenderTarget from './ReactRenderTarget'
 
 const propTypes = {
 	assetsManifestLocation: PropTypes.string.isRequired,
@@ -11,22 +12,23 @@ const propTypes = {
 const MicroFrontendLoader = ({
 	assetsManifestLocation,
 }) => {
-	const microFrontend = useContext(MicroFrontendContext)
+	const ref = useRef()
+
+	const {
+		hasMicroFrontend,
+		microFrontend,
+		renderTargetId: contextRenderTargetId,
+	} = useContext(MicroFrontendContext) || {}
 
 	const [
-		isDoneLoading,
-		setIsDoneLoading,
-	] = useState(false)
+		renderTargetId,
+		setRenderTargetId,
+	] = useState(contextRenderTargetId || '')
 
-	const [
-		renderTarget,
-		setRenderTarget,
-	] = useState('')
-
-	const [
-		linkHrefs,
-		setLinkHrefs,
-	] = useState([])
+	// const [
+	// 	linkHrefs,
+	// 	setLinkHrefs,
+	// ] = useState([])
 
 	const [
 		scriptSrcs,
@@ -34,23 +36,27 @@ const MicroFrontendLoader = ({
 	] = useState([])
 
 	useEffect(() => {
+		if (ref.current) {
+			return
+		}
+
 		axios(assetsManifestLocation)
 		.then(response => (
 			response
 			.data
 		))
 		.then(({
-			linkLocations = [],
-			renderTarget = '',
+			// linkLocations = [],
+			renderTargetId = '',
 			scriptLocations = [],
 		}) => {
-			setRenderTarget(
-				renderTarget
+			setRenderTargetId(
+				renderTargetId
 			)
 
-			setLinkHrefs(
-				linkLocations
-			)
+			// setLinkHrefs(
+			// 	linkLocations
+			// )
 
 			setScriptSrcs(
 				scriptLocations
@@ -59,6 +65,10 @@ const MicroFrontendLoader = ({
 	}, [assetsManifestLocation])
 
 	useEffect(() => {
+		if (ref.current) {
+			return
+		}
+
 		const scriptElements = (
 			scriptSrcs
 			.map(scriptSrc => {
@@ -81,8 +91,6 @@ const MicroFrontendLoader = ({
 			})
 		)
 
-		setIsDoneLoading(true)
-
 		return () => {
 			scriptElements
 			.forEach(scriptElement => {
@@ -92,44 +100,41 @@ const MicroFrontendLoader = ({
 			})
 		}
 	}, [
-		renderTarget,
+		renderTargetId,
 		scriptSrcs,
 	])
 
 	return (
-		microFrontend
+		hasMicroFrontend
 		? (
-			<div
-				dangerouslySetInnerHTML={{
-					__html: microFrontend(),
-				}}
-			/>
+			<ReactRenderTarget renderTargetId={renderTargetId}>
+				{microFrontend()}
+			</ReactRenderTarget>
 		)
 		: (
-			isDoneLoading
-			? (
-				<div>
-					<div id={renderTarget} />
-					{/*
-					<div id={`${renderTarget}-loader`}>
-						<div id={renderTarget} />
-
-						{
-							linkHrefs
-							.map(linkHref => (
-								<link
-									href={`/${renderTarget}/${linkHref}`}
-									key={linkHref}
-									rel="stylesheet"
-								/>
-							))
-						}
-					</div>
-					*/}
-				</div>
-			)
-			: null
+			<div
+				id={
+					renderTargetId
+					|| window.__MICRO_FRONTEND_TARGET_ID__
+				}
+			/>
 		)
+		// : (
+		// 	<div id={`${renderTargetId}-loader`}>
+		// 		<div id={renderTargetId} />
+
+		// 		{
+		// 			linkHrefs
+		// 			.map(linkHref => (
+		// 				<link
+		// 					href={`/${renderTargetId}/${linkHref}`}
+		// 					key={linkHref}
+		// 					rel="stylesheet"
+		// 				/>
+		// 			))
+		// 		}
+		// 	</div>
+		// )
 	)
 }
 

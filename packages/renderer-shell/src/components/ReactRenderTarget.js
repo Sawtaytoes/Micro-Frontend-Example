@@ -16,6 +16,7 @@ const ReactRenderTarget = ({
 			__html: renderToString(children),
 		}}
 		id={renderTargetId}
+		// suppressHydrationWarning
 	/>
 )
 

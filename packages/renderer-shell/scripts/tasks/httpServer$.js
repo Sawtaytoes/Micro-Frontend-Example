@@ -40,13 +40,14 @@ const httpServer$ = (
 			.listenForEntrypoints()
 		}),
 		switchMap((
-			props
+			serverConfig
 		) => (
 			from(routesList)
 			.pipe(
 				mergeMap(({
 					assetsManifestLocation,
 					bundleCacheFilename,
+					...otherRouteProps
 				}) => (
 					from(
 						axios(
@@ -54,13 +55,11 @@ const httpServer$ = (
 						)
 					)
 					.pipe(
-						pluck(
-							'data',
-							'serverBundleLocation',
-						),
-						mergeMap((
-							serverBundleLocation
-						) => (
+						pluck('data'),
+						mergeMap(({
+							renderTargetId,
+							serverBundleLocation,
+						}) => (
 							from(
 								axios(
 									serverBundleLocation
@@ -77,11 +76,17 @@ const httpServer$ = (
 										'utf-8',
 									)
 								)),
+								mapTo({
+									...otherRouteProps,
+									assetsManifestLocation,
+									bundleCacheFilename,
+									renderTargetId,
+								}),
 								catchError((
 									error,
 								) => {
 									console.error(
-										'Failed to save:',
+										'Failed to save server bundle:',
 										bundleCacheFilename,
 										error,
 									)
@@ -105,15 +110,18 @@ const httpServer$ = (
 					)
 				)),
 				toArray(),
-				mapTo({
-					...props,
-					routesList,
-				}),
+				map((
+					routesListConfig,
+				) => ({
+					...serverConfig,
+					routesListConfig,
+				})),
 			)
 		)),
 		map(({
 			devServerConfig,
 			httpServer,
+			routesListConfig,
 			webpackCompiler,
 		}) => (
 			httpServer
@@ -144,6 +152,7 @@ const httpServer$ = (
 				'*',
 				createEntrypointRenderer({
 					filename: 'server.main.bundle',
+					options: { routesListConfig },
 				})
 			)
 		)),

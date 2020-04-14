@@ -8,9 +8,9 @@ const frontendServerPort = config.get('frontendServerPort')
 const fakeCdnServerPort = config.get('fakeCdnServerPort')
 
 const microFrontend1JsonResponse = {
-	renderTarget: (
+	renderTargetId: (
 		config
-		.get('microFrontend1ReactRenderTarget')
+		.get('microFrontend1ReactRenderTargetId')
 	),
 	scriptLocations: [
 		`http://localhost:${frontendServerPort}/client.microFrontend1.bundle.js`,

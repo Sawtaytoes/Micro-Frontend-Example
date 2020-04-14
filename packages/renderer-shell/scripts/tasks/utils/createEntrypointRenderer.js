@@ -3,8 +3,6 @@ const path = require('path')
 const { catchError, map, mergeMap, tap } = require('rxjs/operators')
 const { of, Subject } = require('rxjs')
 
-const routesList = require('../../../config/utils/routesList')
-
 const renderEntrypoint$ = new Subject()
 
 const listenForEntrypoints = () => {
@@ -32,6 +30,7 @@ const listenForEntrypoints = () => {
 		}),
 		mergeMap(({
 			filePath,
+			options = {},
 			request,
 			response,
 		}) => (
@@ -45,7 +44,8 @@ const listenForEntrypoints = () => {
 					serverEntrypoint,
 				) => {
 					const route = (
-						routesList
+						options
+						.routesListConfig
 						.find(({
 							rootPath,
 						}) => (
@@ -55,33 +55,36 @@ const listenForEntrypoints = () => {
 						))
 					)
 
-					const microFrontend = (
-						route
-						? () => (
-							require(route.bundleCacheFilename)
-							.default({
-								__CONFIG__,
-								config,
-								request,
-								response,
-							})
-						)
-						: null
+					const microFrontend = () => (
+						require(route.bundleCacheFilename)
+						.default({
+							__CONFIG__,
+							config,
+							request,
+							response,
+						})
 					)
 
 					return {
-						microFrontend,
+						microFrontendContextValue: {
+							hasMicroFrontend: Boolean(route),
+							microFrontend,
+							renderTargetId: (
+								route
+								&& route.renderTargetId
+							),
+						},
 						serverEntrypoint,
 					}
 				}),
 				map(({
-					microFrontend,
+					microFrontendContextValue,
 					serverEntrypoint,
 				}) => (
 					serverEntrypoint({
 						__CONFIG__,
 						config,
-						microFrontend,
+						microFrontendContextValue,
 						request,
 						response,
 					})
@@ -101,6 +104,7 @@ const listenForEntrypoints = () => {
 
 const createEntrypointRenderer = ({
 	filename,
+	options,
 }) => {
 	const filePath = (
 		path.join(
@@ -116,6 +120,7 @@ const createEntrypointRenderer = ({
 		renderEntrypoint$
 		.next({
 			filePath,
+			options,
 			request,
 			response,
 		})

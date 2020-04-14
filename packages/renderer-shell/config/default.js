@@ -7,7 +7,7 @@ module.exports = {
 	isLocalDevelopment: false,
 	nodeEnvironment: 'production',
 	outputPath: getAbsolutePath('./build'),
-	reactRenderTarget: 'renderer-shell',
+	reactRenderTargetId: 'renderer-shell',
 	routesList,
-	microFrontend1ReactRenderTarget: 'micro-frontend-1',
+	microFrontend1ReactRenderTargetId: 'micro-frontend-1',
 }
