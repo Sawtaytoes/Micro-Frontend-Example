@@ -5,6 +5,7 @@ import App from '../components/App'
 import ConfigAccessForClient from '../components/ConfigAccessForClient'
 import Html from '../components/Html'
 import MicroFrontendContext from '../components/MicroFrontendContext'
+import MicroFrontendTargetIdForClient from '../components/MicroFrontendTargetIdForClient'
 import ReactRenderTarget from '../components/ReactRenderTarget'
 import ServerRoot from '../components/ServerRoot'
 
@@ -29,17 +30,26 @@ const server = ({
 							/>
 						),
 						scripts: (
-							<script
-								defer
-								src={
-									'//localhost'
-									.concat(`:${
-										config
-										.get('frontendServerPort')
-									}`)
-									.concat('/client.main.bundle.js')
-								}
-							/>
+							<React.Fragment>
+								<MicroFrontendTargetIdForClient
+									renderTargetId={
+										microFrontendContextValue
+										.renderTargetId
+									}
+								/>
+
+								<script
+									defer
+									src={
+										'//localhost'
+										.concat(`:${
+											config
+											.get('frontendServerPort')
+										}`)
+										.concat('/client.main.bundle.js')
+									}
+								/>
+							</React.Fragment>
 						),
 					}}
 				>

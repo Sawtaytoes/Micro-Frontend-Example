@@ -11,7 +11,11 @@ const MicroFrontendTargetIdForClient = ({
 	<script
 		dangerouslySetInnerHTML={{
 			__html: `
-window.__MICRO FRONTEND_TARGET_ID = ${renderTargetId}
+window.__MICRO_FRONTEND_TARGET_ID__ = ${
+	JSON.stringify(
+		renderTargetId
+	)
+}
 			`,
 		}}
 	/>

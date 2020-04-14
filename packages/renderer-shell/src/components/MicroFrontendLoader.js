@@ -112,12 +112,14 @@ const MicroFrontendLoader = ({
 			</ReactRenderTarget>
 		)
 		: (
-			<div
-				id={
+			<ReactRenderTarget
+				renderTargetId={
 					renderTargetId
 					|| window.__MICRO_FRONTEND_TARGET_ID__
 				}
-			/>
+			>
+				{(document.getElementById(window.__MICRO_FRONTEND_TARGET_ID__) || {}).innerHTML || ''}
+			</ReactRenderTarget>
 		)
 		// : (
 		// 	<div id={`${renderTargetId}-loader`}>

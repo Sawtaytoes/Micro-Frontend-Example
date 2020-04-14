@@ -11,6 +11,9 @@ const ReactRenderTarget = ({
 	children,
 	renderTargetId,
 }) => (
+	console.log({
+	children,
+	renderTargetId})||
 	<div
 		dangerouslySetInnerHTML={{
 			__html: renderToString(children),
