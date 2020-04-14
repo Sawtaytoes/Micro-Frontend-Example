@@ -1,5 +1,7 @@
 - Figure out partial rehydration
-- Unload React DOM render using `ReactDOM.unmountComponentAtNode(container)`.
+- Re-add `script` to SSR for micro frontend. Make sure it doesn't execute `assetsManifestLocation`. Maybe use a custom hook?
+- Fix hot-reloading.
+- Return `renderToString` before `ReactRenderTarget` potentially.
 - Composition of custom routes.
 - Render more than one micro frontend using `MicroFrontendContext`.
 - Grab main `server.bundle.js` from CDN.
