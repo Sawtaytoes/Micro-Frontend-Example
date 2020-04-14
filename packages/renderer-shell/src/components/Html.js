@@ -5,10 +5,10 @@ const propTypes = {
 	children: PropTypes.node.isRequired,
 	htmlComponents: (
 		PropTypes.shape({
-			htmlProps: PropTypes.object,
-			head: PropTypes.node,
-			scripts: PropTypes.node,
 			body: PropTypes.node,
+			head: PropTypes.node,
+			htmlProps: PropTypes.object,
+			scripts: PropTypes.node,
 		})
 	),
 }
@@ -29,8 +29,8 @@ const Html = ({
 		<body>
 			{children}
 
-			{htmlComponents.scripts}
 			{htmlComponents.body}
+			{htmlComponents.scripts}
 		</body>
 	</html>
 )

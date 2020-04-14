@@ -23,7 +23,11 @@ const MicroFrontendLoader = ({
 	const [
 		renderTargetId,
 		setRenderTargetId,
-	] = useState(contextRenderTargetId || '')
+	] = useState(
+		contextRenderTargetId
+		|| window.__MICRO_FRONTEND_TARGET_ID__
+		|| ''
+	)
 
 	// const [
 	// 	linkHrefs,
@@ -114,17 +118,13 @@ const MicroFrontendLoader = ({
 		: (
 			<ReactRenderTarget
 				hasString
-				renderTargetId={
-					renderTargetId
-					|| window.__MICRO_FRONTEND_TARGET_ID__
-				}
+				renderTargetId={renderTargetId}
 			>
 				{
 					(
 						document
 						.getElementById(
-							window
-							.__MICRO_FRONTEND_TARGET_ID__
+							renderTargetId
 						)
 						|| {}
 					)

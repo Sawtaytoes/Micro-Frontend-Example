@@ -25,11 +25,6 @@ const server = ({
 				<Html
 					htmlComponents={{
 						body: (
-							<ConfigAccessForClient
-								windowConfig={__CONFIG__}
-							/>
-						),
-						scripts: (
 							<React.Fragment>
 								<MicroFrontendTargetIdForClient
 									renderTargetId={
@@ -38,18 +33,23 @@ const server = ({
 									}
 								/>
 
-								<script
-									defer
-									src={
-										'//localhost'
-										.concat(`:${
-											config
-											.get('frontendServerPort')
-										}`)
-										.concat('/client.main.bundle.js')
-									}
+								<ConfigAccessForClient
+									windowConfig={__CONFIG__}
 								/>
 							</React.Fragment>
+						),
+						scripts: (
+							<script
+								defer
+								src={
+									'//localhost'
+									.concat(`:${
+										config
+										.get('frontendServerPort')
+									}`)
+									.concat('/client.main.bundle.js')
+								}
+							/>
 						),
 					}}
 				>

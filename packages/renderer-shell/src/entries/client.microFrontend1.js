@@ -19,8 +19,6 @@ const rootElement = (
 	)
 )
 
-ReactDOM.hydrate(
-
 const reactDomRender = (
 	rootElement.innerHTML
 	? ReactDOM.hydrate
