@@ -20,7 +20,6 @@ const ReactRenderTarget = ({
 				__html: children,
 			}}
 			id={renderTargetId}
-			// suppressHydrationWarning
 		/>
 	)
 	: (
@@ -29,7 +28,6 @@ const ReactRenderTarget = ({
 				__html: renderToString(children),
 			}}
 			id={renderTargetId}
-			// suppressHydrationWarning
 		/>
 	)
 )

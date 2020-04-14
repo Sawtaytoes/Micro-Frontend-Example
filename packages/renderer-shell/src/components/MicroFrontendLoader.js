@@ -1,6 +1,6 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import MicroFrontendContext from './MicroFrontendContext'
 import ReactRenderTarget from './ReactRenderTarget'
@@ -12,11 +12,9 @@ const propTypes = {
 const MicroFrontendLoader = ({
 	assetsManifestLocation,
 }) => {
-	const ref = useRef()
-
 	const {
 		hasMicroFrontend,
-		microFrontend,
+		renderMicroFrontend,
 		renderTargetId: contextRenderTargetId,
 	} = useContext(MicroFrontendContext) || {}
 
@@ -40,7 +38,28 @@ const MicroFrontendLoader = ({
 	] = useState([])
 
 	useEffect(() => {
-		if (ref.current) {
+		return () => {
+			if (!window.__MICRO_FRONTEND_TARGET_ID__) {
+				return
+			}
+
+			const scriptElement = (
+				document.getElementById(
+					window.__MICRO_FRONTEND_TARGET_ID__
+					.concat('-script')
+				)
+			)
+
+			scriptElement
+			.parentNode
+			.removeChild(scriptElement)
+
+			delete window.__MICRO_FRONTEND_TARGET_ID__
+		}
+	}, [])
+
+	useEffect(() => {
+		if (window.__MICRO_FRONTEND_TARGET_ID__) {
 			return
 		}
 
@@ -69,7 +88,7 @@ const MicroFrontendLoader = ({
 	}, [assetsManifestLocation])
 
 	useEffect(() => {
-		if (ref.current) {
+		if (window.__MICRO_FRONTEND_TARGET_ID__) {
 			return
 		}
 
@@ -112,7 +131,7 @@ const MicroFrontendLoader = ({
 		hasMicroFrontend
 		? (
 			<ReactRenderTarget renderTargetId={renderTargetId}>
-				{microFrontend()}
+				{renderMicroFrontend()}
 			</ReactRenderTarget>
 		)
 		: (

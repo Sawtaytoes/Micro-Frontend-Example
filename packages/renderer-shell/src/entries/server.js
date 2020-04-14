@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 import App from '../components/App'
@@ -13,6 +13,7 @@ const server = ({
 	__CONFIG__,
 	config,
 	microFrontendContextValue,
+	microFrontendScriptsHtml,
 	request,
 	response,
 }) => {
@@ -25,7 +26,7 @@ const server = ({
 				<Html
 					htmlComponents={{
 						body: (
-							<React.Fragment>
+							<Fragment>
 								<MicroFrontendTargetIdForClient
 									renderTargetId={
 										microFrontendContextValue
@@ -36,20 +37,25 @@ const server = ({
 								<ConfigAccessForClient
 									windowConfig={__CONFIG__}
 								/>
-							</React.Fragment>
+							</Fragment>
 						),
 						scripts: (
-							<script
-								defer
-								src={
-									'//localhost'
-									.concat(`:${
-										config
-										.get('frontendServerPort')
-									}`)
-									.concat('/client.main.bundle.js')
-								}
-							/>
+							<Fragment>
+								<script
+									defer
+									src={
+										'http://localhost'
+										.concat(':')
+										.concat(
+											config
+											.get('frontendServerPort')
+										)
+										.concat('/client.main.bundle.js')
+									}
+								/>
+
+								{microFrontendScriptsHtml}
+							</Fragment>
 						),
 					}}
 				>

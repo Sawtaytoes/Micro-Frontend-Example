@@ -55,36 +55,62 @@ const listenForEntrypoints = () => {
 						))
 					)
 
-					const microFrontend = () => (
-						require(route.bundleCacheFilename)
-						.default({
-							__CONFIG__,
-							config,
-							request,
-							response,
-						})
+					if (route) {
+						config.get('isLocalDevelopment')
+						&& (
+							delete (
+								require.cache[
+									require.resolve(
+										route.bundleCacheFilename
+									)
+								]
+							)
+						)
+					}
+
+					const microFrontend = (
+						route
+						? (
+							require(route.bundleCacheFilename)
+							.default({
+								__CONFIG__,
+								config,
+								request,
+								response,
+							})
+						)
+						: {}
 					)
 
 					return {
 						microFrontendContextValue: {
 							hasMicroFrontend: Boolean(route),
-							microFrontend,
 							renderTargetId: (
 								route
 								&& route.renderTargetId
 							),
+							renderMicroFrontend: (
+								microFrontend
+								.renderMicroFrontend
+							),
 						},
+						microFrontendScriptsHtml: (
+							microFrontend
+							.scriptsHtml
+						),
 						serverEntrypoint,
 					}
 				}),
 				map(({
 					microFrontendContextValue,
+					microFrontendScriptsHtml,
 					serverEntrypoint,
 				}) => (
 					serverEntrypoint({
 						__CONFIG__,
 						config,
 						microFrontendContextValue,
+						microFrontendScriptsHtml,
 						request,
 						response,
 					})
