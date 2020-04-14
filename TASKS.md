@@ -5,3 +5,4 @@
 - Grab main `server.bundle.js` from CDN.
 - Clear `require.cache` when new version is available from CDN.
 - Figure out how to fix Node.js version conflicts (spawn child renderer for micro frontends?)
+- When micro frontend renders SSR, it has the capability of forcing a redirect if the shell doesn't.
