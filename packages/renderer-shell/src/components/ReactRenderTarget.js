@@ -4,23 +4,34 @@ import { renderToString } from 'react-dom/server'
 
 const propTypes = {
 	children: PropTypes.node.isRequired,
+	hasString: PropTypes.bool,
 	renderTargetId: PropTypes.string.isRequired,
 }
 
 const ReactRenderTarget = ({
 	children,
+	hasString,
 	renderTargetId,
 }) => (
-	console.log({
-	children,
-	renderTargetId})||
-	<div
-		dangerouslySetInnerHTML={{
-			__html: renderToString(children),
-		}}
-		id={renderTargetId}
-		// suppressHydrationWarning
-	/>
+	hasString
+	? (
+		<div
+			dangerouslySetInnerHTML={{
+				__html: children,
+			}}
+			id={renderTargetId}
+			// suppressHydrationWarning
+		/>
+	)
+	: (
+		<div
+			dangerouslySetInnerHTML={{
+				__html: renderToString(children),
+			}}
+			id={renderTargetId}
+			// suppressHydrationWarning
+		/>
+	)
 )
 
 ReactRenderTarget.propTypes = propTypes

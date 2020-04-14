@@ -20,6 +20,14 @@ const rootElement = (
 )
 
 ReactDOM.hydrate(
+
+const reactDomRender = (
+	rootElement.innerHTML
+	? ReactDOM.hydrate
+	: ReactDOM.render
+)
+
+reactDomRender(
 	reactRoot,
 	rootElement,
 )
