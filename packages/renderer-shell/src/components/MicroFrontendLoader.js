@@ -14,6 +14,11 @@ const MicroFrontendLoader = ({
 	const microFrontend = useContext(MicroFrontendContext)
 
 	const [
+		isDoneLoading,
+		setIsDoneLoading,
+	] = useState(false)
+
+	const [
 		renderTarget,
 		setRenderTarget,
 	] = useState('')
@@ -76,6 +81,8 @@ const MicroFrontendLoader = ({
 			})
 		)
 
+		setIsDoneLoading(true)
+
 		return () => {
 			scriptElements
 			.forEach(scriptElement => {
@@ -99,7 +106,7 @@ const MicroFrontendLoader = ({
 			/>
 		)
 		: (
-			renderTarget
+			isDoneLoading
 			? (
 				<div>
 					<div id={renderTarget} />
