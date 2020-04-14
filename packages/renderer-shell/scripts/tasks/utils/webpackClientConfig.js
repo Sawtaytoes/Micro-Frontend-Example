@@ -1,4 +1,3 @@
-// const BellOnBundlerErrorPlugin = require('bell-on-bundler-error-plugin')
 const config = require('config')
 const os = require('os')
 const webpack = require('webpack')
@@ -23,15 +22,22 @@ const webpackClientConfig = {
 		isLocalDevelopment
 		&& 'eval-source-map'
 	),
-	entry: (
-		isLocalDevelopment
-		? [
-			`webpack-hot-middleware/client`,
-			'react-hot-loader/patch',
-			getAbsolutePath('./src/entries/client.js'),
-		]
-		: getAbsolutePath('./src/entries/client.js')
-	),
+	entry: {
+		main: (
+			isLocalDevelopment
+			? [
+				`webpack-hot-middleware/client`,
+				'react-hot-loader/patch',
+				getAbsolutePath('./src/entries/client.js'),
+			]
+			: getAbsolutePath('./src/entries/client.js')
+		),
+		microFrontend1: (
+			getAbsolutePath(
+				'./src/entries/client.microFrontend1.js'
+			)
+		),
+	},
 	mode: nodeEnvironment,
 	module: {
 		rules: [
@@ -61,7 +67,7 @@ const webpackClientConfig = {
 	output: {
 		filename: (
 			isLocalDevelopment
-			? 'client.bundle.js'
+			? 'client.[name].bundle.js'
 			: 'client.[chunkhash:8].js'
 		),
 		path: outputPath,
@@ -78,8 +84,10 @@ const webpackClientConfig = {
 			: []
 		)
 		.concat([
+			new webpack.DefinePlugin({
+				'global.renderEnvironment': 'client',
+			}),
 			new webpack.ProgressPlugin(),
-			// new BellOnBundlerErrorPlugin(),
 			new WebpackBuildNotifierPlugin({
 				suppressSuccess: 'always',
 				title: 'Renderer Shell',

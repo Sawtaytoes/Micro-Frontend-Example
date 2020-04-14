@@ -5,6 +5,7 @@
 localConfig\.js
 
 # generated
+/.serverBundleCache/*.js
 /build
 /node_modules
 *.log

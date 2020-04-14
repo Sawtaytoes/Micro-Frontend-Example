@@ -1,14 +1,25 @@
+const axios = require('axios')
 const config = require('config')
 const cors = require('cors')
 const express = require('express')
-const { catchError, map, tap } = require('rxjs/operators')
-const { of } = require('rxjs')
+const fs = require('fs')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
+const { bindNodeCallback, EMPTY, from, of } = require('rxjs')
+const { catchError, map, mapTo, mergeMap, pluck, retry, switchMap, tap, toArray } = require('rxjs/operators')
 
 const createEntrypointRenderer = require('./utils/createEntrypointRenderer')
+const routesList = require('../../config/utils/routesList')
 const webpackClientConfig = require('./utils/webpackClientConfig')
+
+const fsWriteFile$ = (
+	bindNodeCallback(
+		fs
+		.writeFile
+		.bind(fs)
+	)
+)
 
 const httpServer$ = (
 	of({
@@ -28,6 +39,78 @@ const httpServer$ = (
 			createEntrypointRenderer
 			.listenForEntrypoints()
 		}),
+		switchMap((
+			props
+		) => (
+			from(routesList)
+			.pipe(
+				mergeMap(({
+					assetsManifestLocation,
+					bundleCacheFilename,
+				}) => (
+					from(
+						axios(
+							assetsManifestLocation
+						)
+					)
+					.pipe(
+						pluck(
+							'data',
+							'serverBundleLocation',
+						),
+						mergeMap((
+							serverBundleLocation
+						) => (
+							from(
+								axios(
+									serverBundleLocation
+								)
+							)
+							.pipe(
+								pluck('data'),
+								mergeMap((
+									serverBundle,
+								) => (
+									fsWriteFile$(
+										bundleCacheFilename,
+										serverBundle,
+										'utf-8',
+									)
+								)),
+								catchError((
+									error,
+								) => {
+									console.error(
+										'Failed to save:',
+										bundleCacheFilename,
+										error,
+									)
+
+									process.exit()
+								}),
+							)
+						)),
+						retry(3),
+						catchError(({
+							error,
+						}) => {
+							console.error(
+								"Failed to download:",
+								assetsManifestLocation,
+								error,
+							)
+
+							return EMPTY
+						}),
+					)
+				)),
+				toArray(),
+				mapTo({
+					...props,
+					routesList,
+				}),
+			)
+		)),
 		map(({
 			devServerConfig,
 			httpServer,
@@ -35,14 +118,6 @@ const httpServer$ = (
 		}) => (
 			httpServer
 			.use(cors())
-
-			.use(
-				express
-				.static(
-					config.get('outputPath'),
-					{ redirect: false }
-				)
-			)
 
 			.use(
 				webpackDevMiddleware(
@@ -67,7 +142,9 @@ const httpServer$ = (
 			// )
 			.get(
 				'*',
-				createEntrypointRenderer('server.bundle')
+				createEntrypointRenderer({
+					filename: 'server.main.bundle',
+				})
 			)
 		)),
 		tap((
@@ -75,12 +152,14 @@ const httpServer$ = (
 		) => {
 			httpServer
 			.listen(
-				config
-				.get('frontendServerPort'),
-				(error) => {
+				(
+					config
+					.get('frontendServerPort')
+				),
+				error => {
 					error
 					? console.error(error)
-					: console.log('Listening for web requests...')
+					: console.info('Listening for web requests...')
 				}
 			)
 		}),

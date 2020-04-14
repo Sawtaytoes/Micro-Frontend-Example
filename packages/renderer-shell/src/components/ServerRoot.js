@@ -1,19 +1,32 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 import { StaticRouter } from 'react-router-dom'
-import { hot } from 'react-hot-loader/root'
 
-import App from './App'
+import ConfigContext from './ConfigContext'
+
+const propTypes = {
+	children: PropTypes.node.isRequired,
+	config: PropTypes.object.isRequired,
+	context: PropTypes.object.isRequired,
+	location: PropTypes.string.isRequired,
+}
 
 const ServerRoot = ({
+	children,
+	config,
 	context,
 	location,
 }) => (
-	<StaticRouter
-		context={context}
-		location={location}
-	>
-		<App />
-	</StaticRouter>
+	<ConfigContext.Provider value={config}>
+		<StaticRouter
+			context={context}
+			location={location}
+		>
+			{children}
+		</StaticRouter>
+	</ConfigContext.Provider>
 )
 
-export default hot(ServerRoot)
+ServerRoot.propTypes = propTypes
+
+export default ServerRoot

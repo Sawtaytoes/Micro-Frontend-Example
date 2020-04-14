@@ -1,16 +1,23 @@
 import axios from 'axios'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+
+import MicroFrontendContext from './MicroFrontendContext'
 
 const propTypes = {
-	assetManifestLocation: PropTypes.string.isRequired,
-	microFrontendIdentifier: PropTypes.string.isRequired,
+	assetsManifestLocation: PropTypes.string.isRequired,
 }
 
 const MicroFrontendLoader = ({
-	assetManifestLocation,
-	microFrontendIdentifier,
+	assetsManifestLocation,
 }) => {
+	const microFrontend = useContext(MicroFrontendContext)
+
+	const [
+		renderTarget,
+		setRenderTarget,
+	] = useState('')
+
 	const [
 		linkHrefs,
 		setLinkHrefs,
@@ -22,31 +29,29 @@ const MicroFrontendLoader = ({
 	] = useState([])
 
 	useEffect(() => {
-		axios(assetManifestLocation)
+		axios(assetsManifestLocation)
 		.then(response => (
 			response
 			.data
 		))
 		.then(({
-			entrypoints,
+			linkLocations = [],
+			renderTarget = '',
+			scriptLocations = [],
 		}) => {
+			setRenderTarget(
+				renderTarget
+			)
+
 			setLinkHrefs(
-				entrypoints
-				.filter(entrypoint => (
-					entrypoint
-					.match(/^.*?\.css$/)
-				))
+				linkLocations
 			)
 
 			setScriptSrcs(
-				entrypoints
-				.filter(entrypoint => (
-					entrypoint
-					.match(/^.*?\.js$/)
-				))
+				scriptLocations
 			)
 		})
-	}, [assetManifestLocation])
+	}, [assetsManifestLocation])
 
 	useEffect(() => {
 		const scriptElements = (
@@ -61,7 +66,7 @@ const MicroFrontendLoader = ({
 				.async = true
 
 				scriptElement
-				.src = `/${microFrontendIdentifier}/${scriptSrc}`
+				.src = scriptSrc
 
 				document
 				.body
@@ -79,23 +84,45 @@ const MicroFrontendLoader = ({
 				.removeChild(scriptElement)
 			})
 		}
-	}, [microFrontendIdentifier, scriptSrcs])
+	}, [
+		renderTarget,
+		scriptSrcs,
+	])
 
 	return (
-		<div id={`${microFrontendIdentifier}-loader`}>
-			<div id={microFrontendIdentifier} />
+		microFrontend
+		? (
+			<div
+				dangerouslySetInnerHTML={{
+					__html: microFrontend(),
+				}}
+			/>
+		)
+		: (
+			renderTarget
+			? (
+				<div>
+					<div id={renderTarget} />
+					{/*
+					<div id={`${renderTarget}-loader`}>
+						<div id={renderTarget} />
 
-			{
-				linkHrefs
-				.map(linkHref => (
-					<link
-						href={`/${microFrontendIdentifier}/${linkHref}`}
-						key={linkHref}
-						rel="stylesheet"
-					/>
-				))
-			}
-		</div>
+						{
+							linkHrefs
+							.map(linkHref => (
+								<link
+									href={`/${renderTarget}/${linkHref}`}
+									key={linkHref}
+									rel="stylesheet"
+								/>
+							))
+						}
+					</div>
+					*/}
+				</div>
+			)
+			: null
+		)
 	)
 }
 

@@ -1,14 +1,17 @@
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
+import App from '../components/App'
 import ConfigAccessForClient from '../components/ConfigAccessForClient'
 import Html from '../components/Html'
+import MicroFrontendContext from '../components/MicroFrontendContext'
 import ReactRenderTarget from '../components/ReactRenderTarget'
 import ServerRoot from '../components/ServerRoot'
 
 const server = ({
 	__CONFIG__,
 	config,
+	microFrontend,
 	request,
 	response,
 }) => {
@@ -34,7 +37,7 @@ const server = ({
 										config
 										.get('frontendServerPort')
 									}`)
-									.concat('/client.bundle.js')
+									.concat('/client.main.bundle.js')
 								}
 							/>
 						),
@@ -46,10 +49,17 @@ const server = ({
 							.get('reactRenderTarget')
 						}
 					>
-						<ServerRoot
-							context={context}
-							location={request.url}
-						/>
+						<MicroFrontendContext.Provider
+							value={microFrontend}
+						>
+							<ServerRoot
+								config={config}
+								context={context}
+								location={request.url}
+							>
+								<App />
+							</ServerRoot>
+						</MicroFrontendContext.Provider>
 					</ReactRenderTarget>
 				</Html>
 			)
@@ -66,9 +76,7 @@ const server = ({
 	)
 	: (
 		response
-		.send(
-			htmlString
-		)
+		.send(htmlString)
 	)
 }
 

@@ -4,7 +4,7 @@ import { BrowserRouter, Link, Redirect, Route, Switch, useHistory } from 'react-
 import './App.css'
 
 const MicroFrontendLoader = ({
-  assetManifestLocation,
+  assetsManifestLocation,
   microFrontendIdentifier,
 }) => {
   const [
@@ -18,7 +18,7 @@ const MicroFrontendLoader = ({
   ] = useState([])
 
   useEffect(() => {
-    fetch(assetManifestLocation)
+    fetch(assetsManifestLocation)
     .then(response => (
       response
       .json()
@@ -42,7 +42,7 @@ const MicroFrontendLoader = ({
         ))
       )
     })
-  }, [assetManifestLocation])
+  }, [assetsManifestLocation])
 
   useEffect(() => {
     const scriptElements = (
@@ -220,7 +220,7 @@ const App = () => (
       <Switch>
         <Route path="/micro-frontend-1">
           <MicroFrontendLoader
-            assetManifestLocation="/micro-frontend-1/asset-manifest.json"
+            assetsManifestLocation="/micro-frontend-1/asset-manifest.json"
             microFrontendIdentifier="micro-frontend-1"
           />
         </Route>
@@ -234,7 +234,7 @@ const App = () => (
 
         <Route path="/micro-frontend-2">
           <MicroFrontendLoader
-            assetManifestLocation="/micro-frontend-2/asset-manifest.json"
+            assetsManifestLocation="/micro-frontend-2/asset-manifest.json"
             microFrontendIdentifier="micro-frontend-2"
           />
         </Route>

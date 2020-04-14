@@ -1,21 +1,21 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import App from '../components/App'
 import ClientRoot from '../components/ClientRoot'
+import MicroFrontend1App from '../components/MicroFrontend1App'
 
 const rootElement = (
 	document
 	.getElementById(
 		window
 		.config
-		.get('reactRenderTarget')
+		.get('microFrontend1ReactRenderTarget')
 	)
 )
 
 const reactRoot = (
 	<ClientRoot>
-		<App />
+		<MicroFrontend1App />
 	</ClientRoot>
 )
 

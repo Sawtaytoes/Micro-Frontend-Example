@@ -1,6 +1,7 @@
 const { concatAll, concatMap } = require('rxjs/operators')
 const { from } = require('rxjs')
 
+const fakeCdnServer$ = require('./tasks/fakeCdnServer$')
 const httpServer$ = require('./tasks/httpServer$')
 const lintScripts$ = require('./tasks/lintScripts$')
 const webpackBuild$ = require('./tasks/webpackBuild$')
@@ -14,6 +15,7 @@ const tasks = {
 	develop: [
 		lintScripts$,
 		webpackBuildServer$,
+		fakeCdnServer$,
 		httpServer$,
 	],
 	lint: [

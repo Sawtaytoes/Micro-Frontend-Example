@@ -1,4 +1,3 @@
-// const BellOnBundlerErrorPlugin = require('bell-on-bundler-error-plugin')
 const config = require('config')
 const os = require('os')
 const webpack = require('webpack')
@@ -16,7 +15,18 @@ const webpackServerConfig = {
 		isLocalDevelopment
 		&& 'eval-source-map'
 	),
-	entry: getAbsolutePath('./src/entries/server.js'),
+	entry: {
+		main: (
+			getAbsolutePath(
+				'./src/entries/server.js'
+			)
+		),
+		microFrontend1: (
+			getAbsolutePath(
+				'./src/entries/server.microFrontend1.js'
+			)
+		),
+	},
 	externals: [webpackNodeExternals()],
 	mode: nodeEnvironment,
 	module: {
@@ -36,7 +46,7 @@ const webpackServerConfig = {
 	output: {
 		filename: (
 			isLocalDevelopment
-			? 'server.bundle.js'
+			? 'server.[name].bundle.js'
 			: 'server.[chunkhash:8].js'
 		),
 		libraryTarget: 'commonjs2',
@@ -48,8 +58,10 @@ const webpackServerConfig = {
 		.length
 	),
 	plugins: [
+		new webpack.DefinePlugin({
+			'global.renderEnvironment': 'server',
+		}),
 		new webpack.ProgressPlugin(),
-		// new BellOnBundlerErrorPlugin(),
 		new CleanWebpackPlugin({
 			// cleanStaleWebpackAssets: false,
 		}),
