@@ -1,0 +1,7 @@
+- Figure out partial rehydration
+- Unload React DOM render using `ReactDOM.unmountComponentAtNode(container)`.
+- Composition of custom routes.
+- Render more than one micro frontend using `MicroFrontendContext`.
+- Grab main `server.bundle.js` from CDN.
+- Clear `require.cache` when new version is available from CDN.
+- Figure out how to fix Node.js version conflicts (spawn child renderer for micro frontends?)
