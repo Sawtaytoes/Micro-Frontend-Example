@@ -33,9 +33,13 @@ const webpackClientConfig = {
 			: getAbsolutePath('./src/entries/client.js')
 		),
 		microFrontend1: (
-			getAbsolutePath(
-				'./src/entries/client.microFrontend1.js'
-			)
+			isLocalDevelopment
+			? [
+				`webpack-hot-middleware/client`,
+				'react-hot-loader/patch',
+				getAbsolutePath('./src/entries/client.microFrontend1.js'),
+			]
+			: getAbsolutePath('./src/entries/client.microFrontend1.js')
 		),
 	},
 	mode: nodeEnvironment,
